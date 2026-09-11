@@ -5,20 +5,20 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
   const token = useAuthStore.getState().token;
   const headers = new Headers(options.headers || {});
   if (token) {
-    headers.set('Authorization', Bearer );
+    headers.set('Authorization', 'Bearer ' + token);
   }
   if (!headers.has('Content-Type') && options.body && typeof options.body === 'string') {
     headers.set('Content-Type', 'application/json');
   }
 
-  const response = await fetch(${API_URL}, {
+  const response = await fetch(API_URL + endpoint, {
     ...options,
     headers,
   });
 
   if (!response.ok) {
     const errorBody = await response.text().catch(() => '');
-    throw new Error(API Error : );
+    throw new Error('API Error ' + response.status + ': ' + errorBody);
   }
 
   return response.json();
