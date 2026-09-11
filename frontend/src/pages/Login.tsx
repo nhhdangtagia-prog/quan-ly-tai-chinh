@@ -13,9 +13,19 @@ export function Login() {
     const token = params.get('token')
     
     if (token) {
-      // Fetch user info... (Mocking for now)
-      setAuth({ id: '1', email: 'user@example.com', name: 'User' }, token)
-      navigate('/')
+      // Gọi API lấy thông tin thật của User
+      fetch(`${API_URL}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      .then(res => res.json())
+      .then(user => {
+        setAuth(user, token)
+        navigate('/')
+      })
+      .catch(err => {
+        console.error("Failed to fetch user:", err)
+        alert("Đăng nhập thất bại. Vui lòng thử lại!")
+      })
     } else if (isAuthenticated()) {
       navigate('/')
     }
